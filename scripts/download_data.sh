@@ -1,17 +1,22 @@
-aria2c --auto-file-renaming=false -c -s 16 -x 16 -k 1M -j 16 -i iliad_sources.txt -d "../data/iliad"
+#!/usr/bin/env bash
 
-iliad_books=$(ls 2>/dev/null -Ubad1 -- ../data/iliad/*.xml | wc -l)
-if [ ! "$iliad_books" -eq 24 ]; then
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-  echo "[ERROR] Expected the script to have downloaded 24 Iliad books, but downloaded $iliad_books books. Try again."
-  exit 1
-fi
+download_poem() {
+  poem_name="$1"
+  expected_book_count="$2"
+  sources_dir="$SCRIPT_DIR/${poem_name}_sources.txt"
+  output_dir="$SCRIPT_DIR/../data/${poem_name}"
 
-aria2c --auto-file-renaming=false -c -s 16 -x 16 -k 1M -j 16 -i odyssey_sources.txt -d "../data/odyssey"
+  aria2c --auto-file-renaming=false -c -s 16 -x 16 -k 1M -j 16 -i "$sources_dir" -d "$output_dir"
 
-odyssey_books=$(ls 2>/dev/null -Ubad1 -- ../data/odyssey/*.xml | wc -l)
-if [ ! "$odyssey_books" -eq 24 ]; then
+  actual_book_count=$(ls 2>/dev/null "$output_dir" | wc -l)
+  ls -Ubad1 -- "$output_dir"
+  if [ ! "$actual_book_count" -eq "$expected_book_count" ]; then
+    echo "[ERROR] Expected the script to have downloaded ${expected_book_count} ${poem_name} books, but downloaded ${actual_book_count} books. Try again."
+    exit 1
+  fi
+}
 
-  echo "[ERROR] Expected the script to have downloaded 24 Odyssey books, but downloaded $odyssey_books books. Try again."
-  exit 1
-fi
+download_poem iliad 24
+download_poem odyssey 24
