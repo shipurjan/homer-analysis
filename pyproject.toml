@@ -1,17 +1,17 @@
 [tool.poetry]
-name = "sample-project"
+name = "homer-analysis"
 version = "0.1.0"
-description = ""
-authors = ["Author Name <author@example.com>"]
-# readme = "README.md"
-# license = "BSD"
-packages = [
-  { include = "sample_package" }
-]
+description = "Text analysis of Homer's Iliad and Odyssey texts in Ancient Greek"
+authors = ["Cyprian Zdebski <cyprianz5mail@gmail.com>"]
+readme = "README.md"
+license = "GPL-3.0"
+packages = [{ include = "sample_package" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+numpy = "^2.1.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+

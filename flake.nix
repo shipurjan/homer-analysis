@@ -37,6 +37,7 @@
         {
           default = pkgs.${system}.mkShellNoCC {
             packages = with pkgs.${system}; [
+              aria2
               (mkPoetryEnv { projectDir = self; })
               poetry
             ];
