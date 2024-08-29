@@ -5,12 +5,20 @@ description = "Text analysis of Homer's Iliad and Odyssey texts in Ancient Greek
 authors = ["Cyprian Zdebski <cyprianz5mail@gmail.com>"]
 readme = "README.md"
 license = "GPL-3.0"
-packages = [{ include = "analyzer" }]
+packages = [
+  { include = "analyzer", from = "src" },
+  { include = "gutenberg", from = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "3.12.4"
 beautifulsoup4 = "4.12.3"
 lxml = "5.3.0"
+
+
+[tool.poetry.dev-dependencies]
+pytest-randomly = "3.15.0"
+pytest = "8.2.0"
 
 [build-system]
 requires = ["poetry-core"]

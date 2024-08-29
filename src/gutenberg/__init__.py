@@ -5,6 +5,13 @@ from bs4 import BeautifulSoup
 
 abspath = os.path.abspath(os.path.dirname(__file__))
 
+def read_book_xml(poem_name: str, book_number: int = 1):
+    with open(os.path.join(abspath, "..", "..", "data", poem_name, f"book_{book_number}.xml")) as f:
+        return f.read()
+
+def read_poem_xml(poem_name: str, book_count: int = 24):
+    return [read_book_xml(poem_name, i) for i in range(1,book_count+1)]
+
 def group_by_lines(xml: str):
     soup = BeautifulSoup(xml, "xml")
     return soup.find_all("l")
@@ -31,28 +38,6 @@ def split_card_by_paragraphs(card_xml: str):
     return concat_with_first_element(joined, first)
 
 
-def read_book_xml(poem_name: str, book_number: int = 1):
-    with open(os.path.join(abspath, "..", "data", poem_name, f"book_{book_number}.xml")) as f:
-        return f.read()
-
-def read_poem_xml(poem_name: str, book_count: int = 24):
-    return [read_book_xml(poem_name, i) for i in range(1,book_count+1)]
 
 def get_parsed_book(poem_name: str, book_number: int =1):
     xml = read_book_xml(poem_name, book_number)
-    cards = split_text_by_cards(xml)
-    paragraphs = [split_card_by_paragraphs(card) for card in cards]
-    return paragraphs
-
-
-def main():
-    book = get_parsed_book("iliad", 1)
-    for card in book:
-        print ("[CARD]")
-        for paragraph in card:
-            print("[PARAGRAPH]")
-            print(paragraph)
-
-if __name__ == "__main__":
-    main()
-
