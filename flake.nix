@@ -1,6 +1,6 @@
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/36eaab4720f22ee1e30c24b67c42b7f0d705de8b";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix/7619e43c2b48c29e24b88a415256f09df96ec276";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs";
+  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
 
   outputs =
     {
@@ -25,7 +25,10 @@
           inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication;
         in
         {
-          default = mkPoetryApplication { projectDir = self; };
+          default = mkPoetryApplication {
+            projectDir = self;
+            python = pkgs.${system}.python311;
+          };
         }
       );
 
@@ -38,7 +41,10 @@
           default = pkgs.${system}.mkShellNoCC {
             packages = with pkgs.${system}; [
               aria2
-              (mkPoetryEnv { projectDir = self; })
+              (mkPoetryEnv {
+                projectDir = self;
+                python = pkgs.${system}.python311;
+              })
               poetry
             ];
           };
