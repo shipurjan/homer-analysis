@@ -4,7 +4,8 @@ To get started, run the following:
 
 ```
 $ nix develop
-$ poetry run python -m sample_package
-Hello, world!
+$ poetry run python -m analyzer
 ```
 
+Currently waiting for http://nlpl.eu/ website to get back up, because they have
+Ancient Greek models that I want to download, but the website is down.
