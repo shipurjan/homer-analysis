@@ -1,54 +1,41 @@
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs";
-  inputs.poetry2nix.url = "github:nix-community/poetry2nix";
+  description = "Application";
+
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+  };
 
   outputs =
     {
       self,
       nixpkgs,
-      poetry2nix,
+      flake-utils,
     }:
-    let
-      supportedSystems = [
-        "x86_64-linux"
-        "x86_64-darwin"
-        "aarch64-linux"
-        "aarch64-darwin"
-      ];
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      pkgs = forAllSystems (system: nixpkgs.legacyPackages.${system});
-    in
-    {
-      packages = forAllSystems (
-        system:
-        let
-          inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryApplication;
-        in
-        {
-          default = mkPoetryApplication {
-            projectDir = self;
-            python = pkgs.${system}.python311;
-          };
-        }
-      );
-
-      devShells = forAllSystems (
-        system:
-        let
-          inherit (poetry2nix.lib.mkPoetry2Nix { pkgs = pkgs.${system}; }) mkPoetryEnv;
-        in
-        {
-          default = pkgs.${system}.mkShellNoCC {
-            packages = with pkgs.${system}; [
-              aria2
-              (mkPoetryEnv {
-                projectDir = self;
-                python = pkgs.${system}.python311;
-              })
-              poetry
-            ];
-          };
-        }
-      );
-    };
+    flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          NIX_LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc
+            pkgs.zlib
+            pkgs.libgcc
+          ];
+          NIX_LD = pkgs.lib.fileContents "${pkgs.stdenv.cc}/nix-support/dynamic-linker";
+          packages = with pkgs; [
+            libgcc
+            gcc-unwrapped
+            aria2
+            python311
+            poetry
+          ];
+          shellHook = ''
+            export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+          '';
+        };
+      }
+    );
 }
