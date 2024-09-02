@@ -3,7 +3,7 @@
 To get started, run the following:
 
 ```
-$ nix develop
+$ nix develop --impure
 $ poetry run python -m analyzer
 ```
 
