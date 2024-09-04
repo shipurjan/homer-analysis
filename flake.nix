@@ -34,6 +34,8 @@
           ];
           shellHook = ''
             export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+            cp -r ${builtins.toString self}/data/cltk ~/cltk_data
+            chmod -R 777 ~/cltk_data
           '';
         };
       }

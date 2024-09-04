@@ -3,7 +3,7 @@ from cltk import NLP
 
 from gutenberg import group_by_lines, read_book_txt, read_book_xml
 
-cltk_nlp = NLP(language="grc")
+cltk_nlp = NLP(language="grc", suppress_banner=True)
 cltk_nlp.pipeline.processes.pop(-1)
 
 def print_poem_to_stdout(poem_name: str):
@@ -22,6 +22,7 @@ def remove_greek_punctuation(greek_text: str):
     return rm_char(greek_text, ".,:;'")
 
 def cltk(long_text: str):
+    print("Analyzing...")
     text = long_text[:len(long_text) // 60]
     cltk_doc = cltk_nlp.analyze(text=text)
     return cltk_doc
